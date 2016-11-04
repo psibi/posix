@@ -19,4 +19,3 @@ o_creat = #const O_CREAT
 o_rdonly :: Int
 o_rdonly = #const O_RDONLY
 
-main = print $ [o_append, o_async, o_cloexec, o_creat]
