@@ -29,7 +29,7 @@ foreign import ccall unsafe "close" c_close :: CInt -> IO ()
 close :: Int -> IO ()
 close = c_close . fromIntegral
 
-foreign import ccall unsafe "read" c_read :: CInt -> Ptr () -> CSize -> IO CSsize
+foreign import ccall safe "read" c_read :: CInt -> Ptr () -> CSize -> IO CSsize
 
 read :: Int -- ^ file descriptor
      -> Int64 -- ^ Bytes to allocate
@@ -38,6 +38,6 @@ read :: Int -- ^ file descriptor
 read fd bytes len = do
   (ptr :: Ptr ()) <- mallocBytes (fromIntegral bytes)
   size <- c_read (fromIntegral fd) ptr (fromIntegral len)
-  bstring <- packCString (castPtr ptr)
+  bstring <- packCStringLen (castPtr ptr, fromIntegral size) 
   free ptr
   return (bstring, (fromIntegral size))
