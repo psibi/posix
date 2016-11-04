@@ -3,8 +3,12 @@
 
 name:                ffi-utils
 version:             0.1.0.0
--- synopsis:            
--- description:         
+synopsis:            Linux Systems Programming
+
+description:         The library attempts to provide API interface 
+                     for doing Systems Programming in Linux. It provides 
+                     FFI API to the Linux system calls.
+
 license:             BSD3
 license-file:        LICENSE
 author:              Sibi Prabakaran
@@ -12,7 +16,10 @@ maintainer:          sibi@psibi.in
 -- copyright:           
 category:            Data
 build-type:          Simple
-extra-source-files:  ChangeLog.md
+extra-source-files:  ChangeLog.md,
+                     test/sampleFile.txt, 
+                     README.md
+
 cabal-version:       >=1.10
 
 library
@@ -21,7 +28,20 @@ library
                        Data.C.File.IO
   -- other-modules:       
   -- other-extensions:    
-  build-depends:       base >=4.8 && <4.9, bytestring
+  build-depends:       base >=4.8 && < 5, 
+                       bytestring
   hs-source-dirs:      src
 
   default-language:    Haskell2010
+
+test-suite test
+    type:          exitcode-stdio-1.0
+    ghc-options:   -Wall
+    hs-source-dirs: test
+    main-is:        main.hs
+    
+    build-depends:   base >= 4.5 && < 5,
+                     hspec,
+                     bytestring,
+                     ffi-utils
+
