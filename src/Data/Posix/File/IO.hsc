@@ -58,7 +58,7 @@ read fd bytes len = do
   free ptr
   return (bstring, (fromIntegral size))
 
-pforeign import ccall unsafe "close" c_close :: CInt -> IO ()
+foreign import ccall unsafe "close" c_close :: CInt -> IO ()
 
 close :: Int -> IO ()
 close = c_close . fromIntegral
