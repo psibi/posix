@@ -1,6 +1,6 @@
 {-# LANGUAGE ForeignFunctionInterface #-}
 
-module Data.C.Error where
+module Data.Posix.Error where
 
 import Foreign
 import Foreign.C.Types
