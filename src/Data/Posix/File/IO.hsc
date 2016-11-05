@@ -8,6 +8,7 @@ module Data.Posix.File.IO
   , read
   , creat
   , write
+  -- * Synchronized I/O
   , fsync
   , fdatasync
   ) where
@@ -77,6 +78,7 @@ foreign import ccall unsafe "write" c_write ::
                CInt -> Ptr () -> CSize -> IO CSsize
 
 -- | write() system call
+
 write
   :: Int -- ^ File descriptor
   -> ByteString
@@ -88,7 +90,6 @@ write fd bs =
        size <- c_write (fromIntegral fd) (castPtr ptr) (fromIntegral len)
        return $ fromIntegral size)
 
--- $ Synchronized I/O
 foreign import ccall safe "fsync" c_fsync :: CInt -> IO CInt
 
 fsync
