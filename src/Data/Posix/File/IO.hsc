@@ -1,15 +1,21 @@
 {-# LANGUAGE ForeignFunctionInterface #-}
 {-# LANGUAGE ScopedTypeVariables#-}
 
-module Data.Posix.File.IO 
-(open, openMode, close, read, creat, write)
-where
+module Data.Posix.File.IO
+  ( open
+  , openMode
+  , close
+  , read
+  , creat
+  , write
+  , fsync
+  , fdatasync
+  ) where
 
 import Prelude hiding (read)
 import Foreign
 import Foreign.C.String
 import Foreign.C.Types
-import Foreign.Marshal.Alloc (free)
 import System.Posix.Types (CSsize(..), CMode(..))
 import Data.ByteString
 
@@ -27,37 +33,39 @@ open pathname flags = do
   free str'
   return $ fromIntegral ret
 
-foreign import ccall unsafe "open" c_open_mode :: CString -> CInt -> CMode -> IO CInt
+foreign import ccall unsafe "open" c_open_mode ::
+               CString -> CInt -> CMode -> IO CInt
 
-openMode :: String -> Int -> CMode
-         -> IO Int
+openMode :: String -> Int -> CMode -> IO Int
 openMode pathname flags mode = do
   str' <- newCString pathname
   ret <- c_open_mode str' (fromIntegral flags) mode
   free str'
   return $ fromIntegral ret
 
-foreign import ccall safe "read" c_read :: CInt -> Ptr () -> CSize -> IO CSsize
+foreign import ccall safe "read" c_read ::
+               CInt -> Ptr () -> CSize -> IO CSsize
 
-read :: Int -- ^ file descriptor
-     -> Int64 -- ^ Bytes to allocate
-     -> Word64 -- ^ Read upto this many bytes
-     -> IO (ByteString, Int64)
+read
+  :: Int -- ^ file descriptor
+  -> Int64 -- ^ Bytes to allocate
+  -> Word64 -- ^ Read upto this many bytes
+  -> IO (ByteString, Int64)
 read fd bytes len = do
   (ptr :: Ptr ()) <- mallocBytes (fromIntegral bytes)
   size <- c_read (fromIntegral fd) ptr (fromIntegral len)
-  bstring <- packCStringLen (castPtr ptr, fromIntegral size) 
+  bstring <- packCStringLen (castPtr ptr, fromIntegral size)
   free ptr
   return (bstring, (fromIntegral size))
 
-foreign import ccall unsafe "close" c_close :: CInt -> IO ()
+pforeign import ccall unsafe "close" c_close :: CInt -> IO ()
 
 close :: Int -> IO ()
 close = c_close . fromIntegral
 
 -- | create() system call
-
-foreign import ccall unsafe "creat" c_creat :: CString -> CMode -> IO ()
+foreign import ccall unsafe "creat" c_creat ::
+               CString -> CMode -> IO ()
 
 creat :: String -> CMode -> IO ()
 creat name mode = do
@@ -65,14 +73,37 @@ creat name mode = do
   c_creat str mode
   free str
 
-foreign import ccall unsafe "write" c_write :: CInt -> Ptr () -> CSize -> IO CSsize
+foreign import ccall unsafe "write" c_write ::
+               CInt -> Ptr () -> CSize -> IO CSsize
 
 -- | write() system call
-write :: Int -- ^ File descriptor
-      -> ByteString
-      -> IO Int64
-write fd bs = useAsCStringLen bs 
-              (\(ptr, len) -> do
-                 size <- c_write (fromIntegral fd) (castPtr ptr) (fromIntegral len)
-                 return $ fromIntegral size)
-  
+write
+  :: Int -- ^ File descriptor
+  -> ByteString
+  -> IO Int64
+write fd bs =
+  useAsCStringLen
+    bs
+    (\(ptr, len) -> do
+       size <- c_write (fromIntegral fd) (castPtr ptr) (fromIntegral len)
+       return $ fromIntegral size)
+
+-- $ Synchronized I/O
+foreign import ccall safe "fsync" c_fsync :: CInt -> IO CInt
+
+fsync
+  :: Int -- ^ File descriptor
+  -> IO Int
+fsync fd = do
+  ret <- c_fsync $ fromIntegral fd
+  return $ fromIntegral ret
+
+foreign import ccall safe "fdatasync" c_fdatasync ::
+               CInt -> IO CInt
+
+fdatasync
+  :: Int -- ^ File descriptor
+  -> IO Int
+fdatasync fd = do
+  ret <- c_fdatasync $ fromIntegral fd
+  return $ fromIntegral ret
