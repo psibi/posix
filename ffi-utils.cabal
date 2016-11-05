@@ -23,9 +23,9 @@ extra-source-files:  ChangeLog.md,
 cabal-version:       >=1.10
 
 library
-  exposed-modules:     Data.C.Error
-                       Data.C.File.Constant
-                       Data.C.File.IO
+  exposed-modules:     Data.Posix.Error
+                       Data.Posix.File.Constant
+                       Data.Posix.File.IO
   -- other-modules:       
   -- other-extensions:    
   build-depends:       base >=4.8 && < 5, 
