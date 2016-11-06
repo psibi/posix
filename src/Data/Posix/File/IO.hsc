@@ -11,6 +11,7 @@ module Data.Posix.File.IO
   -- * Synchronized I/O
   , fsync
   , fdatasync
+  , sync                                           
   ) where
 
 import Prelude hiding (read)
@@ -23,6 +24,7 @@ import Data.ByteString
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <unistd.h>
 
 foreign import ccall unsafe "open" c_open ::
                CString -> CInt -> IO CInt
@@ -74,7 +76,7 @@ creat name mode = do
   c_creat str mode
   free str
 
-foreign import ccall unsafe "write" c_write ::
+foreign import ccall safe "write" c_write ::
                CInt -> Ptr () -> CSize -> IO CSsize
 
 -- | write() system call
@@ -108,3 +110,5 @@ fdatasync
 fdatasync fd = do
   ret <- c_fdatasync $ fromIntegral fd
   return $ fromIntegral ret
+
+foreign import ccall safe "sync" sync :: IO ()
