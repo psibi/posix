@@ -19,6 +19,7 @@ import Foreign
 import Foreign.C.String
 import Foreign.C.Types
 import System.Posix.Types (CSsize(..), CMode(..))
+import Data.Int (Int32)
 import Data.ByteString
 
 #include <sys/types.h>
@@ -29,7 +30,7 @@ import Data.ByteString
 foreign import ccall unsafe "open" c_open ::
                CString -> CInt -> IO CInt
 
-open :: String -> Int -> IO Int
+open :: String -> Int32 -> IO Int32
 open pathname flags = do
   str' <- newCString pathname
   ret <- c_open str' (fromIntegral flags)
@@ -39,7 +40,7 @@ open pathname flags = do
 foreign import ccall unsafe "open" c_open_mode ::
                CString -> CInt -> CMode -> IO CInt
 
-openMode :: String -> Int -> CMode -> IO Int
+openMode :: String -> Int32 -> CMode -> IO Int32
 openMode pathname flags mode = do
   str' <- newCString pathname
   ret <- c_open_mode str' (fromIntegral flags) mode
@@ -50,7 +51,7 @@ foreign import ccall safe "read" c_read ::
                CInt -> Ptr () -> CSize -> IO CSsize
 
 read
-  :: Int -- ^ file descriptor
+  :: Int32 -- ^ file descriptor
   -> Int64 -- ^ Bytes to allocate
   -> Word64 -- ^ Read upto this many bytes
   -> IO (ByteString, Int64)
@@ -63,7 +64,7 @@ read fd bytes len = do
 
 foreign import ccall unsafe "close" c_close :: CInt -> IO ()
 
-close :: Int -> IO ()
+close :: Int32 -> IO ()
 close = c_close . fromIntegral
 
 -- | create() system call
@@ -82,7 +83,7 @@ foreign import ccall safe "write" c_write ::
 -- | write() system call
 
 write
-  :: Int -- ^ File descriptor
+  :: Int32 -- ^ File descriptor
   -> ByteString
   -> IO Int64
 write fd bs =
@@ -95,8 +96,8 @@ write fd bs =
 foreign import ccall safe "fsync" c_fsync :: CInt -> IO CInt
 
 fsync
-  :: Int -- ^ File descriptor
-  -> IO Int
+  :: Int32 -- ^ File descriptor
+  -> IO Int32
 fsync fd = do
   ret <- c_fsync $ fromIntegral fd
   return $ fromIntegral ret
@@ -105,8 +106,8 @@ foreign import ccall safe "fdatasync" c_fdatasync ::
                CInt -> IO CInt
 
 fdatasync
-  :: Int -- ^ File descriptor
-  -> IO Int
+  :: Int32 -- ^ File descriptor
+  -> IO Int32
 fdatasync fd = do
   ret <- c_fdatasync $ fromIntegral fd
   return $ fromIntegral ret
