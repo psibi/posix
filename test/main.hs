@@ -5,6 +5,7 @@ import qualified Data.Posix.File.IO as IO
 import System.Posix.Types (CMode(..))
 import Data.ByteString
 import Data.Bits
+import Data.Int (Int32)
 import Test.Hspec
 
 main :: IO ()
@@ -22,7 +23,7 @@ main =
                IO.close fd
                dat `shouldBe` ("This is a sample file.\n", 23)
           it "write example" $
-            do fd <- IO.open "./test/sample.txt" (o_wronly .|. o_trunc)
+            do fd <- IO.open "./test/sample.txt" (o_creat .|. o_wronly .|. o_trunc)
                IO.write fd "hello world"
                IO.close fd
                fd <- IO.open "./test/sample.txt" (o_rdonly)
