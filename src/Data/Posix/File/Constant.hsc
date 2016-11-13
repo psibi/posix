@@ -1,70 +1,36 @@
-module Data.Posix.File.Constant where
+module Data.Posix.File.Constant
+( module Foreign.C.Error ) where
 
 import Data.Int (Int32)
+import Foreign.C.Error
 
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
 
--- $ Error constant and their descriptions
-
-e2big :: Int32
-e2big = #const E2BIG
-
-eacces :: Int32
-eacces = #const EACCES
-
-eagain :: Int32
-eagain = #const EAGAIN
-
-ebadf :: Int32
-ebadf = #const EBADF
-
-ebusy :: Int32
-ebusy = #const EBUSY
-
-echild :: Int32
-echild = #const ECHILD
-
-edom :: Int32
-edom = #const EDOM
-
-eexist :: Int32
-eexist = #const EEXIST
-
-efault :: Int32
-efault = #const EFAULT
-
-efbig :: Int32
-efbig = #const EFBIG
-
-eintr :: Int32
-eintr = #const EINTR
-
-
 -- $ Flags for open() system call 
 
-o_append :: Int32
-o_append = #const O_APPEND
+oAPPEND :: Int32
+oAPPEND = #const O_APPEND
 
-o_async :: Int32
-o_async = #const O_ASYNC
+oASYNC :: Int32
+oASYNC = #const O_ASYNC
 
-o_cloexec :: Int32
-o_cloexec = #const O_CLOEXEC
+oCLOEXEC :: Int32
+oCLOEXEC = #const O_CLOEXEC
 
-o_creat :: Int32
-o_creat = #const O_CREAT
+oCREAT :: Int32
+oCREAT = #const O_CREAT
 
-o_rdonly :: Int32
-o_rdonly = #const O_RDONLY
+oRDONLY :: Int32
+oRDONLY = #const O_RDONLY
 
-o_trunc :: Int32
-o_trunc = #const O_TRUNC
+oTRUNC :: Int32
+oTRUNC = #const O_TRUNC
 
-o_wronly :: Int32
-o_wronly = #const O_WRONLY
+oWRONLY :: Int32
+oWRONLY = #const O_WRONLY
 
 -- $ Flags for synchronized I/O
 
@@ -79,3 +45,19 @@ oDSYNC = #const O_DSYNC
 
 oRSYNC :: Int32
 oRSYNC = #const O_RSYNC
+
+-- $ Flag for Direct I/O
+
+oDIRECT :: Int32
+oDIRECT = #const O_DIRECT
+
+-- $ Positional I/O flags
+
+sEEK_CUR :: Int32
+sEEK_CUR = #const SEEK_CUR
+
+sEEK_END :: Int32
+sEEK_END = #const SEEK_END
+
+sEEK_SET :: Int32
+SEEK_SET = #const SEEK_SET
