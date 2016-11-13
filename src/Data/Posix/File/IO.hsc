@@ -12,6 +12,9 @@ module Data.Posix.File.IO
   , fsync
   , fdatasync
   , sync                                           
+  -- * Positional I/O
+  , lseek
+  -- * Other functions
   ) where
 
 import Prelude hiding (read)
@@ -21,6 +24,7 @@ import Foreign.C.Types
 import System.Posix.Types (CSsize(..), CMode(..))
 import Data.Int (Int32)
 import Data.ByteString
+import Data.Posix.File.Types
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -113,3 +117,16 @@ fdatasync fd = do
   return $ fromIntegral ret
 
 foreign import ccall safe "sync" sync :: IO ()
+
+-- Regarding off_t:
+-- http://stackoverflow.com/questions/9073667/where-to-find-the-complete-definition-of-off-t-type
+foreign import ccall unsafe "lseek" c_lseek ::
+               CInt -> CLong -> CInt -> IO CLong
+
+lseek :: Int32 -- ^ File descriptor
+      -> OffT -- ^ File position
+      -> Int32 -- ^ Origin Flag
+      -> IO OffT
+lseek fd pos origin = do
+  retPos <- c_lseek (fromIntegral fd) (fromIntegral $ unOffT pos) (fromIntegral origin)
+  return $ OffT $ fromIntegral retPos
