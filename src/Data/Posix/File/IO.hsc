@@ -14,6 +14,8 @@ module Data.Posix.File.IO
   , sync                                           
   -- * Positional I/O
   , lseek
+  , pread
+  , pwrite
   -- * Other functions
   ) where
 
@@ -121,12 +123,36 @@ foreign import ccall safe "sync" sync :: IO ()
 -- Regarding off_t:
 -- http://stackoverflow.com/questions/9073667/where-to-find-the-complete-definition-of-off-t-type
 foreign import ccall unsafe "lseek" c_lseek ::
-               CInt -> CLong -> CInt -> IO CLong
+               CInt -> (#type off_t) -> CInt -> IO (#type off_t)
 
 lseek :: Int32 -- ^ File descriptor
-      -> OffT -- ^ File position
+      -> (#type off_t) -- ^ File position
       -> Int32 -- ^ Origin Flag
-      -> IO OffT
-lseek fd pos origin = do
-  retPos <- c_lseek (fromIntegral fd) (fromIntegral $ unOffT pos) (fromIntegral origin)
-  return $ OffT $ fromIntegral retPos
+      -> IO (#type off_t)
+lseek fd pos origin = c_lseek (fromIntegral fd) pos (fromIntegral origin)
+
+foreign import ccall safe "pread" c_pread :: CInt -> Ptr () -> CSize -> (#type off_t) -> IO (#type ssize_t)
+
+pread :: Int32 -- ^ File descriptor
+      -> Int64 -- ^ Bytes to read
+      -> (#type off_t) -- ^ File position
+      -> IO (ByteString, #type ssize_t)
+pread fd bytes pos = do
+  (ptr :: Ptr ()) <- mallocBytes (fromIntegral bytes)
+  size <- c_pread (fromIntegral fd) ptr (fromIntegral bytes) pos
+  bstring <- packCStringLen (castPtr ptr, fromIntegral size)
+  free ptr
+  return (bstring, size)
+
+foreign import ccall safe "pwrite" c_pwrite :: CInt -> Ptr () -> CSize -> (#type off_t) -> IO (#type ssize_t)
+
+pwrite :: Int32 -- ^ File descriptor
+       -> ByteString
+       -> (#type off_t) -- ^ File position
+       ->  IO (#type ssize_t)
+pwrite fd bs pos =
+  useAsCStringLen
+    bs
+    (\(ptr, len) -> do
+       size <- c_pwrite (fromIntegral fd) (castPtr ptr) (fromIntegral len) pos
+       return $ fromIntegral size)
