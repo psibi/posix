@@ -1,9 +1,12 @@
 module Data.Posix.File.Constant
-( module Foreign.C.Error ) where
+  ( module Data.Posix.File.Constant
+  , module Foreign.C.Error
+  ) where
 
 import Data.Int (Int32)
 import Foreign.C.Error
 
+#define _GNU_SOURCE
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -53,11 +56,11 @@ oDIRECT = #const O_DIRECT
 
 -- $ Positional I/O flags
 
-sEEK_CUR :: Int32
-sEEK_CUR = #const SEEK_CUR
+sEEKCUR :: Int32
+sEEKCUR = #const SEEK_CUR
 
-sEEK_END :: Int32
-sEEK_END = #const SEEK_END
+sEEKEND :: Int32
+sEEKEND = #const SEEK_END
 
-sEEK_SET :: Int32
-SEEK_SET = #const SEEK_SET
+sEEKSET :: Int32
+sEEKSET = #const SEEK_SET
