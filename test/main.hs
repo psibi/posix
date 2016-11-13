@@ -15,6 +15,7 @@ main =
   do readCall
      positionalIO
 
+readCall :: SpecWith ()
 readCall = do
   describe "read call" $
     do it "read example" $
@@ -36,6 +37,7 @@ readCall = do
             IO.close fd
             (fst dat) `shouldBe` "hello world"
 
+positionalIO :: SpecWith ()
 positionalIO = do
   describe "Positional I/O" $
     do it "lseek" $
