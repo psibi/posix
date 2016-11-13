@@ -26,7 +26,6 @@ import Foreign.C.Types
 import System.Posix.Types (CSsize(..), CMode(..))
 import Data.Int (Int32)
 import Data.ByteString
-import Data.Posix.File.Types
 
 #include <sys/types.h>
 #include <sys/stat.h>
