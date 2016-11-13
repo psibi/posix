@@ -16,6 +16,9 @@ module Data.Posix.File.IO
   , lseek
   , pread
   , pwrite
+  -- * Truncate Files
+  , ftruncate
+  , truncate
   -- * Other functions
   ) where
 
@@ -155,3 +158,21 @@ pwrite fd bs pos =
     (\(ptr, len) -> do
        size <- c_pwrite (fromIntegral fd) (castPtr ptr) (fromIntegral len) pos
        return $ fromIntegral size)
+
+foreign import ccall safe "ftruncate" c_ftruncate :: CInt -> (#type off_t) -> IO CInt
+
+ftruncate :: Int32 -- ^ File descriptor
+          -> (#type off_t) -- ^ Truncates given file to this length
+          -> IO Int32
+ftruncate fd len = do
+  res <- c_ftruncate (fromIntegral fd) len
+  return $ fromIntegral res
+
+foreign import ccall safe "truncate" c_truncate :: CString -> (#type off_t) -> IO CInt
+
+truncate :: ByteString -- ^ File name
+         -> (#type off_t) -- ^ Truncates given file to this length
+         -> IO Int32
+truncate bs len = useAsCString bs (\str -> do
+                                     size <- c_truncate str len
+                                     return $ fromIntegral size)
