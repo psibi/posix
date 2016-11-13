@@ -29,7 +29,7 @@ library
                        Data.Posix.File.IO
   -- other-modules:       
   -- other-extensions:    
-  build-depends:       base >=4.8 && < 5, 
+  build-depends:       base >=4.5 && < 5, 
                        bytestring
   hs-source-dirs:      src
 
