@@ -24,6 +24,7 @@ cabal-version:       >=1.10
 
 library
   exposed-modules:     Data.Posix.Error
+                       Data.Posix.File.Types
                        Data.Posix.File.Constant
                        Data.Posix.File.IO
   -- other-modules:       
