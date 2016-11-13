@@ -42,7 +42,20 @@ positionalIO = do
   describe "Positional I/O" $
     do it "lseek" $
          do fd <- IO.open "./test/sampleFile.txt" oRDONLY
-            _ <- IO.lseek fd (OffT 3) (sEEKSET)
+            _ <- IO.lseek fd 3 (sEEKSET)
             dat <- IO.read fd 30 30
             IO.close fd
             dat `shouldBe` ("s is a sample file.\n", 20)
+       it "pread" $
+         do fd <- IO.open "./test/sampleFile.txt" oRDONLY
+            dat <- IO.pread fd 30 0
+            IO.close fd
+            dat `shouldBe` ("This is a sample file.\n", 23)
+       it "pwrite" $
+         do fd <- IO.open "./test/sample.txt" (oCREAT .|. oWRONLY .|. oTRUNC)
+            IO.pwrite fd "hello world" 0
+            IO.close fd
+            fd <- IO.open "./test/sample.txt" (oRDONLY)
+            dat <- IO.read fd 30 30
+            IO.close fd
+            (fst dat) `shouldBe` "hello world"
