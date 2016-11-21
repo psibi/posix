@@ -11,6 +11,10 @@ import Foreign.C.Error
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include <stdio.h>
+
+eOF :: Int32
+eOF = #const EOF
 
 -- $ Flags for open() system call 
 
