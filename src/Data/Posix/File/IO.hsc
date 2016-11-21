@@ -22,7 +22,7 @@ module Data.Posix.File.IO
   -- * Other functions
   ) where
 
-import Prelude hiding (read)
+import Prelude hiding (read, truncate)
 import Foreign
 import Foreign.C.String
 import Foreign.C.Types
