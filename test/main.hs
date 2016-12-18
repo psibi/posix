@@ -70,3 +70,15 @@ fdSetTypeTest = do
             fdSet (Fd 5) fdset
             ret <- fdIsSet (Fd 5) fdset
             ret `shouldNotBe` 0
+       it "fd_clr macro" $
+         do fdset <- emptyFdSet
+            fdSet (Fd 5) fdset
+            fdClr (Fd 5) fdset
+            ret <- fdIsSet (Fd 5) fdset
+            ret `shouldBe` 0
+       it "fd_zero macro" $
+         do fdset <- emptyFdSet
+            fdSet (Fd 5) fdset
+            fdZero fdset
+            ret <- fdIsSet (Fd 5) fdset
+            ret `shouldBe` 0
