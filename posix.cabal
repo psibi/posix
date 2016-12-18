@@ -17,8 +17,10 @@ maintainer:          sibi@psibi.in
 category:            Data
 build-type:          Simple
 extra-source-files:  ChangeLog.md,
-                     test/sampleFile.txt, 
-                     README.md
+                     test/sampleFile.txt,
+                     README.md,
+                     cbits/cbits.c,
+                     include/cbits.h
 
 cabal-version:       >=1.10
 
@@ -27,11 +29,15 @@ library
                        Data.Posix.File.Types
                        Data.Posix.File.Constant
                        Data.Posix.File.IO
-  -- other-modules:       
-  -- other-extensions:    
+                       Data.Posix.Internal.FdSet
   build-depends:       base >=4.5 && < 5, 
                        bytestring
   hs-source-dirs:      src
+
+  c-sources:           cbits/cbits.c
+  include-dirs:        include
+  includes:            cbits.h
+  install-includes:    cbits.h
 
   default-language:    Haskell2010
 
@@ -40,7 +46,9 @@ test-suite test
     ghc-options:   -Wall
     hs-source-dirs: test
     main-is:        main.hs
-    
+
+    default-language:    Haskell2010
+
     build-depends:   base >= 4.5 && < 5,
                      hspec,
                      bytestring,
