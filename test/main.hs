@@ -2,7 +2,8 @@
 
 import Data.Posix.File.Constant
 import qualified Data.Posix.File.IO as IO
-import System.Posix.Types (CMode(..))
+import System.Posix.Types (CMode(..), Fd(..))
+import Data.Posix.Internal.FdSet
 import Data.Posix.File.Types
 import Data.ByteString
 import Data.Bits
@@ -14,6 +15,7 @@ main =
   hspec $
   do readCall
      positionalIO
+     fdSetTypeTest
 
 readCall :: SpecWith ()
 readCall = do
@@ -59,3 +61,12 @@ positionalIO = do
             dat <- IO.read fd 30 30
             IO.close fd
             (fst dat) `shouldBe` "hello world"
+
+fdSetTypeTest :: SpecWith ()
+fdSetTypeTest = do
+  describe "fdset macros test" $
+    do it "fd_set macro" $
+         do fdset <- emptyFdSet
+            fdSet (Fd 5) fdset
+            ret <- fdIsSet (Fd 5) fdset
+            ret `shouldNotBe` 0
