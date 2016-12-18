@@ -29,7 +29,9 @@ library
                        Data.Posix.File.Types
                        Data.Posix.File.Constant
                        Data.Posix.File.IO
+                       Data.Posix.Multiplexed.IO
                        Data.Posix.Internal.FdSet
+                       Data.Posix.Internal.Timeval
   build-depends:       base >=4.5 && < 5, 
                        bytestring
   hs-source-dirs:      src
