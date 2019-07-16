@@ -1,4 +1,4 @@
-resolver: lts-7.9
+resolver: lts-13.27
 
 # non-dependency (i.e. a user package), and its test suites and benchmarks
 # will not be run. This is useful for tweaking upstream packages.

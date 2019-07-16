@@ -28,6 +28,7 @@ library
   exposed-modules:     Data.Posix.Error
                        Data.Posix.File.Types
                        Data.Posix.File.Constant
+                       Data.Posix.Test
                        Data.Posix.File.IO
                        Data.Posix.Multiplexed.IO
                        Data.Posix.Internal.FdSet

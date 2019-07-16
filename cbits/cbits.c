@@ -1,5 +1,6 @@
 #include <sys/select.h>
 #include "cbits.h"
+#include <stdio.h>
 
 void fd_clr_wrapper(int fd, fd_set* set)
 {
@@ -20,3 +21,27 @@ void fd_zero_wrapper(fd_set* set)
 {
   FD_ZERO(set);
 }
+
+struct test a = {
+                 .pNext = NULL,
+                 .testField1 = "helloko",
+                 .testField2 = "byeko",
+                 .testField3 = "aaa"
+};
+
+struct test jam() {
+  struct test a = {
+    .pNext = NULL,               
+    .testField1 = "hello",
+    .testField2 = "bye",
+    .testField3 = "ABC"
+  };
+  return a;
+}
+
+struct test *jam2() {
+  return &a;
+}
+
+
+  
